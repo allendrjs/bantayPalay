@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>El Niño Watch PH</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="vendor/chart.umd.min.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <div class="brand">
+        <svg aria-hidden="true" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        <div>
+          <div class="brand-name">El Niño Watch PH</div>
+          <div class="brand-sub">How El Niño affects palay, prices and water across Philippine regions</div>
+        </div>
+      </div>
+      <nav aria-label="Main" class="nav">
+        <a href="#overview" class="active">Overview</a>
+        <a href="#production">Production</a>
+        <a href="#regions">Regions</a>
+        <a href="#data">Data sources</a>
+      </nav>
+    </div>
+  </header>
+
+  <div id="sample-banner" class="banner" hidden>
+    <div class="wrap">Showing <strong>SAMPLE data</strong> — numbers are synthetic. Add real files to <code>data/raw/</code> and re-run the loader.</div>
+  </div>
+
+  <main class="wrap main">
+    <section aria-label="Filters" class="filters">
+      <div class="field">
+        <label for="f-region">Region</label>
+        <select id="f-region"><option value="">All regions</option></select>
+      </div>
+      <div class="field">
+        <label for="f-event">El Niño event</label>
+        <select id="f-event"></select>
+      </div>
+      <fieldset class="field">
+        <legend>Palay ecosystem</legend>
+        <div class="segmented" id="f-eco">
+          <button type="button" data-eco="both" aria-pressed="true">Both</button>
+          <button type="button" data-eco="irrigated" aria-pressed="false">Irrigated</button>
+          <button type="button" data-eco="rainfed" aria-pressed="false">Rainfed</button>
+        </div>
+      </fieldset>
+      <button type="button" id="download" class="btn-outline">Download CSV</button>
+    </section>
+
+    <section id="overview" aria-label="Key figures" class="kpis">
+      <div class="card kpi">
+        <div class="kpi-label">Latest ONI value</div>
+        <div class="kpi-value" id="k-oni">–</div>
+        <div class="pill" id="k-oni-status">–</div>
+        <div class="kpi-src" id="k-oni-season">NOAA CPC · 3-month mean</div>
+      </div>
+      <div class="card kpi" data-eco-card="rainfed">
+        <div class="kpi-label">Rainfed palay change vs. normal years</div>
+        <div class="kpi-value orange" id="k-rainfed">–</div>
+        <div class="kpi-src">PSA OpenSTAT · vs. 3 years before event</div>
+      </div>
+      <div class="card kpi" data-eco-card="irrigated">
+        <div class="kpi-label">Irrigated palay change vs. normal years</div>
+        <div class="kpi-value teal" id="k-irrigated">–</div>
+        <div class="kpi-src">PSA OpenSTAT · vs. 3 years before event</div>
+      </div>
+      <div class="card kpi">
+        <div class="kpi-label">Rice retail price change</div>
+        <div class="kpi-value" id="k-price">–</div>
+        <div class="kpi-src">PSA retail prices · peak vs. year before</div>
+      </div>
+    </section>
+
+    <section aria-labelledby="oni-h" class="card chart-card">
+      <div class="card-head">
+        <h2 id="oni-h">El Niño strength over time (ONI)</h2>
+        <div class="legend">
+          <span><i class="swatch band"></i>Selected event</span>
+          <span><i class="dash orange-b"></i>El Niño threshold (+0.5)</span>
+          <span><i class="dash teal-b"></i>La Niña threshold (−0.5)</span>
+        </div>
+      </div>
+      <div class="chart-box tall"><canvas id="oni-chart" role="img" aria-label="Line chart of the Oceanic Niño Index over time"></canvas></div>
+    </section>
+
+    <div class="row">
+      <section id="production" aria-labelledby="prod-h" class="card chart-card grow">
+        <div class="card-head">
+          <div>
+            <h2 id="prod-h">Palay production change by event</h2>
+            <p class="muted">Change in the event's second year vs. the 3 years before it</p>
+          </div>
+        </div>
+        <div class="chart-box"><canvas id="prod-chart" role="img" aria-label="Bar chart of irrigated and rainfed palay production change for each El Niño event"></canvas></div>
+      </section>
+
+      <section aria-labelledby="insight-h" class="card dark insight">
+        <h2 id="insight-h">What the data says</h2>
+        <p id="insight-text">–</p>
+        <div class="insight-stat">
+          <div class="muted-light">Correlation: ONI peak vs. rainfed change</div>
+          <div class="kpi-value amber" id="k-corr">–</div>
+          <div class="muted-light small" id="k-corr-n"></div>
+        </div>
+        <a href="#regions" class="btn-amber">See most affected regions</a>
+      </section>
+    </div>
+
+    <section id="regions" aria-labelledby="reg-h" class="card">
+      <div class="card-head">
+        <h2 id="reg-h">Regional drought risk</h2>
+        <span class="muted">Vulnerability = 40% rainfed share + 30% recent rain deficit + 30% past losses (long-term) · This season = trained model on current ONI and rainfall (<span id="model-name">not trained yet</span>)</span>
+      </div>
+      <div class="table-box">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Region</th>
+              <th scope="col">Vulnerability</th>
+              <th scope="col" class="num">Vuln. score</th>
+              <th scope="col" class="num">Rainfed share of palay area</th>
+              <th scope="col" class="num">Rainfall vs. normal (last 3 mo)</th>
+              <th scope="col" class="num">Avg. rainfed change in past events</th>
+              <th scope="col">This season's risk (model)</th>
+              <th scope="col" class="num">Forecast rainfed change</th>
+            </tr>
+          </thead>
+          <tbody id="risk-body"><tr><td colspan="8">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer id="data" class="footer">
+      <span>Data: NOAA CPC (ONI) · PSA OpenSTAT (palay production, prices) · PAGASA / NASA POWER (rainfall)</span>
+      <span id="loaded-at"></span>
+    </footer>
+  </main>
+</body>
+</html>

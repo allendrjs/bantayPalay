@@ -1,0 +1,80 @@
+{
+  "chosen_model": "Gradient boosting",
+  "trained_on_sample_data": true,
+  "last_train_year": 2014,
+  "rows": {
+    "train": 352,
+    "test": 176
+  },
+  "scores": [
+    {
+      "model": "Baseline (always predicts the training median)",
+      "mae": 9.65,
+      "rmse": 12.43,
+      "mae_elnino_years": 15.7
+    },
+    {
+      "model": "Linear regression",
+      "mae": 6.58,
+      "rmse": 8.83,
+      "mae_elnino_years": 4.28
+    },
+    {
+      "model": "Random forest",
+      "mae": 6.8,
+      "rmse": 8.86,
+      "mae_elnino_years": 4.66
+    },
+    {
+      "model": "Gradient boosting",
+      "mae": 6.23,
+      "rmse": 8.41,
+      "mae_elnino_years": 4.4
+    }
+  ],
+  "ranking": [
+    {
+      "year": 2016,
+      "regions": 16,
+      "Weighted formula (dashboard v1)": 0.27,
+      "Linear regression": 0.36,
+      "Random forest": 0.64,
+      "Gradient boosting": 0.16
+    },
+    {
+      "year": 2024,
+      "regions": 16,
+      "Weighted formula (dashboard v1)": 0.03,
+      "Linear regression": 0.13,
+      "Random forest": -0.19,
+      "Gradient boosting": -0.01
+    }
+  ],
+  "feature_importance": [
+    {
+      "feature": "oni_max",
+      "mae_increase": 2.58
+    },
+    {
+      "feature": "oni_max_prev",
+      "mae_increase": 1.06
+    },
+    {
+      "feature": "rain_dev_prev",
+      "mae_increase": 0.55
+    },
+    {
+      "feature": "oni_mean",
+      "mae_increase": 0.23
+    },
+    {
+      "feature": "rain_dev",
+      "mae_increase": 0.05
+    },
+    {
+      "feature": "rainfed_share",
+      "mae_increase": 0.04
+    }
+  ],
+  "trained_at": "2026-10-10T14:07:05.350042+00:00"
+}
